@@ -330,6 +330,7 @@ class SvScriptNodeLite(bpy.types.Node, SverchCustomTreeNode, SvAnimatableNode):
 
         # make .blend reload event work, without this the self.node_dict is empty.
         if not self.node_dict:
+            print("maybe this is a reload event")
             # self.load()
             self.injected_state = False
             self.update_sockets()
