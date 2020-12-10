@@ -33,6 +33,7 @@ from sverchok.core.socket_data import SvGetSocketInfo
 from sverchok.data_structure import updateNode, node_id, match_long_repeat, enum_item_5
 from sverchok.node_tree import SverchCustomTreeNode
 from sverchok.ui.bgl_callback_3dview import callback_disable, callback_enable
+from sverchok.ui import bgl_callback_nodeview as nvBGL
 from sverchok.utils.sv_batch_primitives import MatrixDraw28
 from sverchok.utils.sv_shader_sources import dashed_vertex_shader, dashed_fragment_shader
 from sverchok.utils.geom import multiply_vectors_deep
@@ -773,9 +774,12 @@ class SvViewerDrawMk4(bpy.types.Node, SverchCustomTreeNode):
         self.handle_attr_socket()
         if not (self.id_data.sv_show and self.activate):
             callback_disable(node_id(self))
+            nvBGL.callback_disable(node_id(self))
             return
         n_id = node_id(self)
         callback_disable(n_id)
+        nvBGL.callback_disable(n_id)
+
         inputs = self.inputs
         # end early
         if not self.activate:
@@ -820,6 +824,7 @@ class SvViewerDrawMk4(bpy.types.Node, SverchCustomTreeNode):
                 'args': (geom, config)
             }
             callback_enable(n_id, draw_data)
+            # nvBGL.callback_enable(n_id, draw_data_2d)
 
         elif inputs['Matrix'].is_linked:
             matrices = inputs['Matrix'].sv_get(deepcopy=False, default=[Matrix()])
@@ -832,6 +837,7 @@ class SvViewerDrawMk4(bpy.types.Node, SverchCustomTreeNode):
 
     def sv_free(self):
         callback_disable(node_id(self))
+        nvBGL.callback_disable(node_id(self))
 
     def show_viewport(self, is_show: bool):
         """It should be called by node tree to show/hide objects"""
@@ -843,6 +849,7 @@ class SvViewerDrawMk4(bpy.types.Node, SverchCustomTreeNode):
                 self.process()
             else:
                 callback_disable(node_id(self))
+                nvBGL.callback_disable(node_id(self))
 
 
 
