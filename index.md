@@ -283,6 +283,7 @@
     SvOrigins
     GetNormalsNode
     VectorNormalNode
+    SvDifferentialGeometryNode
     SvIntersectLineSphereNode
     SvIntersectCircleCircleNode
     SvIntersectPlanePlaneNode
