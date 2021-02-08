@@ -69,8 +69,8 @@ else:
             self.inputs.new('SvStringsSocket', "ScalarValue")
             self.inputs.new('SvVerticesSocket', "VectorValue")
             self.inputs.new('SvStringsSocket', "Scale").prop_name = 'scale'
-            self.outputs.new('SvVerticesSocket', "Positions")
-            self.outputs.new('SvVerticesSocket', "Gradient")
+            self.outputs.new('SvVerticesSocket', "Grad_Start")
+            self.outputs.new('SvVerticesSocket', "Grad_end")
             self.outputs.new('SvStringsSocket', "Divergence")
             self.outputs.new('SvStringsSocket', "Curl")
             # self.outputs.new('SvVerticesSocket', "Vertices")
@@ -86,14 +86,16 @@ else:
             if self.operation == 'GRAD':
                 self.inputs['ScalarValue'].hide_safe = False
                 self.inputs['VectorValue'].hide_safe = True
-                self.outputs['Gradient'].hide_safe = False
+                self.outputs['Grad_Start'].hide_safe = False
+                self.outputs['Grad_end'].hide_safe = False
                 self.outputs['Divergence'].hide_safe = True
                 self.outputs['Curl'].hide_safe = True
 
             else:
                 self.inputs['ScalarValue'].hide_safe = True
                 self.inputs['VectorValue'].hide_safe = False
-                self.outputs['Gradient'].hide_safe = True
+                self.outputs['Grad_Start'].hide_safe = True
+                self.outputs['Grad_end'].hide_safe = True
                 self.outputs['Divergence'].hide_safe = False
                 self.outputs['Curl'].hide_safe = False
 
@@ -101,7 +103,7 @@ else:
 
         scale: FloatProperty(
             name='Size', description='Size of Gradient', default=10.0, update=updateNode)
-        # norm: BoolProperty(name='Center', description='Center the line', default=False, update=updateNode)
+        # TODO: BoolProperty to add Normalized OUTPUT for Gradient
 
         operation: EnumProperty(
             name="Operation",
@@ -119,35 +121,36 @@ else:
             vVals = self.inputs['VectorValue'].sv_get(default=[[None]])
             scale = self.inputs['Scale'].sv_get(default=[[None]])
 
-            Grads = []
-            Pos = []
+            Grad_Start = []
+            Grad_end = []
             Div = []
             Curl = []
             if self.operation == 'GRAD':
                 for v, p, sVal in zip(verts, faces, sVals):
                     mesh = trimesh.Trimesh(v, p, process=False)
-                    S = np.array(sVals[0])
+                    S = np.array(sVal)
                     G = gradient(S, mesh, rotated=False).T
                     Gr = gradient(S, mesh, rotated=True).T
                     tri_centers = mesh.vertices[mesh.faces].mean(axis=1)
-                    Grads.append((tri_centers + G * scale).tolist())
-                    Pos.append(tri_centers.tolist())
+                    Grad_end.append((tri_centers + G * scale).tolist())
+                    Grad_Start.append(tri_centers.tolist())
 
             elif self.operation == 'DIV_CURL':
                 for v, p, vVal in zip(verts, faces, vVals):
                     mesh = trimesh.Trimesh(v, p, process=False)
-                    V = np.array(vVals[0])
+                    V = np.array(vVal)
+                    # V_centers = V[mesh.faces].mean(axis=1) #Don't know why not very Accurate
                     D = divergence(V, mesh)
                     C = curl(V, mesh)
-                    Div.append(D)
-                    Curl.append(C)
+                    Div.append(D.tolist())
+                    Curl.append(C.tolist())
 
             # outputs
-            if self.outputs['Positions'].is_linked:
-                self.outputs['Positions'].sv_set(Pos)
+            if self.outputs['Grad_Start'].is_linked:
+                self.outputs['Grad_Start'].sv_set(Grad_Start)
 
-            if self.outputs['Gradient'].is_linked:
-                self.outputs['Gradient'].sv_set(Grads)
+            if self.outputs['Grad_end'].is_linked:
+                self.outputs['Grad_end'].sv_set(Grad_end)
 
             if self.outputs['Divergence'].is_linked:
                 self.outputs['Divergence'].sv_set(Div)
