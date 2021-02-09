@@ -69,8 +69,8 @@ else:
             self.inputs.new('SvStringsSocket', "ScalarValue")
             self.inputs.new('SvVerticesSocket', "VectorValue")
             self.inputs.new('SvStringsSocket', "Scale").prop_name = 'scale'
-            self.outputs.new('SvVerticesSocket', "Grad_Start")
-            self.outputs.new('SvVerticesSocket', "Grad_end")
+            self.outputs.new('SvVerticesSocket', "Position")
+            self.outputs.new('SvVerticesSocket', "Gradient")
             self.outputs.new('SvStringsSocket', "Divergence")
             self.outputs.new('SvStringsSocket', "Curl")
             # self.outputs.new('SvVerticesSocket', "Vertices")
@@ -86,16 +86,16 @@ else:
             if self.operation == 'GRAD':
                 self.inputs['ScalarValue'].hide_safe = False
                 self.inputs['VectorValue'].hide_safe = True
-                self.outputs['Grad_Start'].hide_safe = False
-                self.outputs['Grad_end'].hide_safe = False
+                self.outputs['Gradient'].hide_safe = False
+                self.outputs['Position'].hide_safe = False
                 self.outputs['Divergence'].hide_safe = True
                 self.outputs['Curl'].hide_safe = True
 
             else:
                 self.inputs['ScalarValue'].hide_safe = True
                 self.inputs['VectorValue'].hide_safe = False
-                self.outputs['Grad_Start'].hide_safe = True
-                self.outputs['Grad_end'].hide_safe = True
+                self.outputs['Gradient'].hide_safe = True
+                self.outputs['Position'].hide_safe = True
                 self.outputs['Divergence'].hide_safe = False
                 self.outputs['Curl'].hide_safe = False
 
@@ -121,8 +121,8 @@ else:
             vVals = self.inputs['VectorValue'].sv_get(default=[[None]])
             scale = self.inputs['Scale'].sv_get(default=[[None]])
 
-            Grad_Start = []
-            Grad_end = []
+            Position = []
+            Gradient = []
             Div = []
             Curl = []
             if self.operation == 'GRAD':
@@ -132,8 +132,8 @@ else:
                     G = gradient(S, mesh, rotated=False).T
                     Gr = gradient(S, mesh, rotated=True).T
                     tri_centers = mesh.vertices[mesh.faces].mean(axis=1)
-                    Grad_end.append((tri_centers + G * scale).tolist())
-                    Grad_Start.append(tri_centers.tolist())
+                    Gradient.append((G * scale).tolist())
+                    Position.append(tri_centers.tolist())
 
             elif self.operation == 'DIV_CURL':
                 for v, p, vVal in zip(verts, faces, vVals):
@@ -146,11 +146,11 @@ else:
                     Curl.append(C.tolist())
 
             # outputs
-            if self.outputs['Grad_Start'].is_linked:
-                self.outputs['Grad_Start'].sv_set(Grad_Start)
+            if self.outputs['Position'].is_linked:
+                self.outputs['Position'].sv_set(Position)
 
-            if self.outputs['Grad_end'].is_linked:
-                self.outputs['Grad_end'].sv_set(Grad_end)
+            if self.outputs['Gradient'].is_linked:
+                self.outputs['Gradient'].sv_set(Gradient)
 
             if self.outputs['Divergence'].is_linked:
                 self.outputs['Divergence'].sv_set(Div)
