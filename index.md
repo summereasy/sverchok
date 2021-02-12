@@ -26,8 +26,6 @@
     SvQuadraticSplineNode
     svBasicArcNode
     RandomVectorNodeMK3
-    SvScriptNodeLite
-    SvSNFunctorB
     ImageNode
 
 ## Generators Extended
@@ -37,10 +35,6 @@
     HilbertNode
     Hilbert3dNode
     HilbertImageNode
-    SvProfileNodeMK3
-    SvMeshEvalNode
-    SvReceiveFromSorcarNode
-    SvGenerativeArtNode
     SvImageComponentsNode
     SvWFCTextureNode
     SvTorusKnotNodeMK2
@@ -191,6 +185,7 @@
     SvExDecomposeVectorFieldNode
     SvExScalarFieldPointNode
     SvAttractorFieldNodeMk2
+    SvRotationFieldNode
     SvExImageFieldNode
     SvMeshSurfaceFieldNode
     SvExMeshNormalFieldNode
@@ -494,14 +489,11 @@
     RandomNode
     Float2IntNode
     ---
-    SvExecNodeMod
     SvMapRangeNode
     SvEasingNode
     SvCurveMapperNode
     SvMixNumbersNode
     SvMixInputsNode
-    SvFormulaNodeMk5
-    SvFormulaInterpolateNode
     ---
     SvGenFibonacci
     SvGenExponential
@@ -661,6 +653,17 @@
     SvExJsonToNurbsNode
     SvImportSolidNode
     SvExportSolidNode
+    SvReceiveFromSorcarNode
+
+## Script
+    SvFormulaNodeMk5
+    SvFormulaInterpolateNode
+    SvExecNodeMod
+    SvScriptNodeLite
+    SvProfileNodeMK3
+    SvMeshEvalNode
+    SvGenerativeArtNode
+    SvTopologySimple
 
 ## Network
     UdpClientNode
@@ -732,6 +735,7 @@
     ---
     SvCSGBooleanNodeMK2
     SvNumpyArrayNode
+    SvSNFunctorB
     SvParticlesMK2Node
     SvJoinTrianglesNode
     SvListSliceLiteNode
@@ -740,7 +744,6 @@
     SvSeparateMeshNodeMK2
     SvMultiExtrudeAlt
     SvPlanarEdgenetToPolygons
-    SvTopologySimple
     SvSweepModulator
     ---
     SvGetPropNodeMK2
