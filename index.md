@@ -532,6 +532,7 @@
     SvIterateNode
     MatrixDeformNode
     SvMatrixValueIn
+    SvMatrixInput
     SvMatrixEulerNode
     MatrixShearNode
     SvMatrixNormalNode
